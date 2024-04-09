@@ -46,7 +46,6 @@ class Flowers:
       else:
         self.flower_loc[str(grid_loc[0]) + ";" + str(grid_loc[1])] = [Flower((obj['pos'][0] + 16, obj['pos'][1] + 16), assets['flower'][obj['variant']])]
       # self.flowers.append(Flower((obj['pos'][0] + 16, obj['pos'][1] + 16), assets['flower'][obj['variant']]))
-    print(self.flower_loc)
     self.flower_pos_list = list(self.flower_loc)
   
   def update(self, rect, surf, scroll, time, gust):

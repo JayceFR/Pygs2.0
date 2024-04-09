@@ -11,6 +11,7 @@ class PhysicsEntity:
         self.action = ''
         self.anim_offset = (0,0)
         self.flip = False
+        self.last_movement = [0,0]
         self.set_action('idle')
     
     def rect(self):
@@ -54,6 +55,8 @@ class PhysicsEntity:
             self.flip = False
         if movement[0] < 0:
             self.flip = True
+
+        self.last_movement = movement
         
         self.velocity[1] = min(5, self.velocity[1] + 0.1)
         

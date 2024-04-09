@@ -15,6 +15,8 @@ class Hud():
                 if event.button == 0:
                     joystick = self.joysticks[event.instance_id]
                     self.return_dict["jump"] = True
+                    if self.obj.__class__.__name__ == "Game":
+                        self.obj.player.jump()
                     # if joystick.rumble(0, 0.7, 500):
                     #     print(f"Rumble effect played on joystick {event.instance_id}")
             if event.type == pygame.JOYBUTTONUP:
@@ -47,6 +49,8 @@ class Hud():
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     self.return_dict["left"] = True
                 if event.key == pygame.K_SPACE or event.key == pygame.K_w or event.key == pygame.K_UP:
+                    if self.obj.__class__.__name__ == "Game":
+                        self.obj.player.jump()
                     self.return_dict["jump"] = True
                 if event.key == pygame.K_w or event.key == pygame.K_UP:
                     self.return_dict["up"] = True

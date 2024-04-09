@@ -30,8 +30,6 @@ class Game():
       'player/jump': Animation([load_img('entities/player/jump.png', scale=0.8),])
     }
 
-    print(self.assets)
-
     self.hud = Hud(self)
 
     self.clock = pygame.time.Clock()
@@ -82,8 +80,6 @@ class Game():
         self.movement[0] = True
       if controls['right']:
         self.movement[1] = True
-      if controls['jump']:
-        self.player.velocity[1] = -3
       
       surf = self.display.copy()
       if not self.full_screen:
