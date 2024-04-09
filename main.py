@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 from pygs.entities.gust import Gust
 from pygs.entities.player import Player
 from pygs.entities.flower import Flowers
@@ -6,12 +7,15 @@ from pygs.utils.images import load_img, load_imgs, load_spritesheet, Animation
 from pygs.ui.hud import Hud
 from pygs.map.map import TileMap
 
+
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 
 class Game():
   def __init__(self):
+    pygame.display.set_caption("Pygs2.0")
     self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+    self.MONITOR_SIZE = pygame.display.get_desktop_sizes()[0]
     self.display = pygame.Surface((SCREEN_WIDTH//2,SCREEN_HEIGHT//2))
     self.movement = [False, False]
 
@@ -41,6 +45,7 @@ class Game():
     self.gust = Gust()
     
     self.true_scroll = [0,0]
+    self.full_screen = False
     # self.scroll = [0,0]
 
   def run(self):
@@ -51,8 +56,12 @@ class Game():
       # print(self.clock.get_fps())
       self.display.fill((0,0,0))
 
-      self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - SCREEN_WIDTH//4) / 30
-      self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - SCREEN_HEIGHT//4) / 30
+      if not self.full_screen:
+        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - SCREEN_WIDTH//4) / 30
+        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - SCREEN_HEIGHT//4) / 30
+      else:
+        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - self.MONITOR_SIZE[0]//4) / 30
+        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - self.MONITOR_SIZE[1]//4) / 30
       scroll = self.true_scroll.copy()
       scroll[0] = int(scroll[0])
       scroll[1] = int(scroll[1])
@@ -77,7 +86,10 @@ class Game():
         self.player.velocity[1] = -3
       
       surf = self.display.copy()
-      surf = pygame.transform.scale(surf, (SCREEN_WIDTH,SCREEN_HEIGHT))
+      if not self.full_screen:
+        surf = pygame.transform.scale(surf, (SCREEN_WIDTH,SCREEN_HEIGHT))
+      else:
+        surf = pygame.transform.scale(surf, self.MONITOR_SIZE)
       self.screen.blit(surf, (0,0))
       pygame.display.flip()
       run = controls['run']

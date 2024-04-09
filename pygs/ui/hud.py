@@ -54,6 +54,11 @@ class Hud():
                     self.return_dict["down"] = True
                 if event.key == pygame.K_LSHIFT:
                     self.return_dict['ongrid'] = not self.return_dict['ongrid']
+                if event.key == pygame.K_f:
+                    if self.obj.__class__.__name__ == "Game":
+                        self.obj.screen = pygame.display.set_mode(self.obj.MONITOR_SIZE, pygame.FULLSCREEN)
+                        self.obj.display = pygame.Surface((self.obj.MONITOR_SIZE[0]//2, self.obj.MONITOR_SIZE[1]//2))
+                        self.obj.full_screen = True
                 if event.key == pygame.K_o:
                     if self.obj.__class__.__name__ == "Editor":
                         self.obj.tilemap.save('map.json')
