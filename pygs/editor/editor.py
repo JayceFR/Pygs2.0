@@ -20,9 +20,10 @@ class Editor():
 
     self.assets = {
       'grass' : load_imgs('tiles/grass', scale=1),
-      'decor': load_imgs('tiles/decor', scale=1),
+      'decor': load_imgs('tiles/decor', scale=1, color_key=(255,255,255)),
       'stone': load_imgs('tiles/stone', scale=1),
-      'flower': load_imgs('tiles/flower', (255,255,255))
+      'flower': load_imgs('tiles/flower', (255,255,255)),
+      'spawners': load_imgs('tiles/spawners', (0,0,0)),
     }
 
     self.hud = Hud(self)
@@ -126,7 +127,7 @@ class Editor():
       for pos, img in enumerate(self.assets[self.tile_list[self.tile_group]]):
         curr_img = img.copy()
         if pos * 40 + 50 - int(scroll_bar_scroll) > 30 and pos * 40 + 50 - int(scroll_bar_scroll) < 220:
-          if pygame.rect.Rect(45, pos * 40 + 50 - int(scroll_bar_scroll), 16,16).collidepoint(self.mouse_pos):
+          if pygame.rect.Rect(45, pos * 40 + 50 - int(scroll_bar_scroll), curr_img.get_width(),curr_img.get_height()).collidepoint(self.mouse_pos):
             hover_tile = pos
           self.display.blit(curr_img, (45, pos * 40 + 50 - int(scroll_bar_scroll)))
 

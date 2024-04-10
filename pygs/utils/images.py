@@ -4,7 +4,7 @@ BASE_IMG_PATH = './data/images/'
 
 #load a specific image
 def load_img(path, color_key = (0,0,0), scale=0, scale_coords=None):
-  curr_img = pygame.image.load(BASE_IMG_PATH + path).convert_alpha()
+  curr_img = pygame.image.load(BASE_IMG_PATH + path).convert()
   if scale > 0 or scale_coords:
     if not scale_coords:
       curr_img = pygame.transform.scale(curr_img, (curr_img.get_width()*scale, curr_img.get_height()*scale))

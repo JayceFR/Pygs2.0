@@ -61,7 +61,7 @@ class Hud():
                 if event.key == pygame.K_f:
                     if self.obj.__class__.__name__ == "Game":
                         self.obj.screen = pygame.display.set_mode(self.obj.MONITOR_SIZE, pygame.FULLSCREEN)
-                        self.obj.display = pygame.Surface((self.obj.MONITOR_SIZE[0]//2, self.obj.MONITOR_SIZE[1]//2))
+                        # self.obj.display = pygame.Surface((self.obj.MONITOR_SIZE[0]//2, self.obj.MONITOR_SIZE[1]//2))
                         self.obj.full_screen = True
                 if event.key == pygame.K_o:
                     if self.obj.__class__.__name__ == "Editor":
