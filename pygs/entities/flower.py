@@ -8,9 +8,13 @@ class Flower:
     self.target_angle = 0
   
   def render(self, surf, scroll):
-    self.angle += (self.target_angle - self.angle) / 3
+    self.angle += (self.target_angle - self.angle) / 2
     img = self.img.copy()
     img = pygame.transform.rotate(img, self.angle)
+    # shade = pygame.Surface((16,16))
+    # shade_amt = 100 * (abs(self.angle) / 90)
+    # shade.set_alpha(shade_amt)
+    # img.blit(shade, (0,0))
     surf.blit(img, (self.pos[0] - scroll[0] - int(img.get_width()//2), self.pos[1] - scroll[1] - int(img.get_height()//2)))
   
   def collide(self, rect, time, gust):
