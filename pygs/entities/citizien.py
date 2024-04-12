@@ -9,7 +9,7 @@ class Citizen(PhysicsEntity):
   
   def update(self, tilemap, movement=(0,0)):
     if self.walking:
-      if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
+      if tilemap.solid_check((self.rect().centerx + (-self.size[0]//2 if self.flip else self.size[0]//2), self.pos[1] + self.size[1])):
         if (self.collisions['right'] or self.collisions['left']):
           self.flip = not self.flip
         else:

@@ -49,9 +49,9 @@ class Water():
         if not molecule.colliding:
           molecule.colliding = True
           if player_rect.y > molecule.rect.y:
-            self.splash(pos, -4)
+            self.splash(pos, -2)
           else:
-            self.splash(pos, 4)
+            self.splash(pos, 2)
       else:
         if molecule.colliding:
           molecule.colliding = False
@@ -60,7 +60,7 @@ class Water():
     self.points = [POINT(self.pos[0] - scroll[0], self.pos[1] + self.height - scroll[1])]
     for molecule in self.molecules:
       self.points.append(POINT(molecule.rect.x - scroll[0], molecule.height - scroll[1]))
-    self.points.append(POINT(self.pos[0] + self.radius * (self.number_of_molecules + 1) - scroll[0], self.pos[1] + self.height - scroll[1]))
+    self.points.append(POINT(self.pos[0] + self.radius * (self.number_of_molecules + 1) - scroll[0] - 6, self.pos[1] + self.height - scroll[1]))
     # self.points = self.get_curve(self.points)
     # self.points.extend([POINT(self.pos[0] + self.radius * (self.number_of_molecules-1) - 16 - scroll[0], self.pos[1] + self.height - scroll[1]), POINT(self.pos[0] - scroll[0], self.pos[1] + self.height - scroll[1])])
     
