@@ -9,7 +9,7 @@ from pygs.utils.images import load_img, load_imgs, load_spritesheet, Animation
 from pygs.ui.hud import Hud
 from pygs.map.map import TileMap
 from pygs.utils.decorators import pygs
-
+from pygs.ui.fire import Flame
 SCREEN_WIDTH = 1536 // 2
 SCREEN_HEIGHT = 960 // 2
 
@@ -97,6 +97,7 @@ class Game():
       self.waters.append(Water((rect[0], rect[1]), rect[2]//4, rect[3]))
     self.true_scroll = [0,0]
     self.full_screen = False
+    self.fire_particle = Flame((91, 105))
     # self.scroll = [0,0]
 
   @pygs
@@ -122,6 +123,8 @@ class Game():
 
       self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
       self.player.render(self.display, scroll)
+      
+      self.fire_particle.draw_flame(self.display, [0,0])
 
       # for rect in self.waters_rects:
       #   pygame.draw.rect(self.display, (0,0,200), [rect[0] - scroll[0], rect[1] - scroll[1], rect[2], rect[3]])
