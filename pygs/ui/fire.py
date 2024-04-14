@@ -16,12 +16,14 @@ class FireParticle():
     for x in range(self.alpha_layers, -1, -1):
       alpha = max(255 - x * (255//self.alpha_layers - 5), 0)
       radius = self.radius * x * x * self.alpha_glow
-      if self.radius == 3 or self.radius == 2:
+      if self.orig_radius >= 2.5:
         r,g,b = (255,0,0)
-      elif self.radius == 1:
+      elif self.orig_radius >= 1.5:
         r,g,b = (255, 150, 0)
+      elif self.orig_radius >= 1:
+        r,g,b = (120,120,120)
       else:
-        r,g,b = (255,150,50)
+        r,g,b = (55,50,50)
       color = (r,g,b,alpha)
       pygame.draw.circle(self.surf, color, (self.surf.get_width()//2, self.surf.get_height()//2), radius)
     surf.blit(self.surf, self.surf.get_rect(center=(self.pos[0] -scroll[0] , self.pos[1] - scroll[1])))

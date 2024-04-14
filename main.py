@@ -16,10 +16,11 @@ SCREEN_HEIGHT = 960 // 2
 class Game():
   def __init__(self):
     pygame.display.set_caption("Pygs2.0")
-    self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE)
+    self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.OPENGL | pygame.DOUBLEBUF)
     self.MONITOR_SIZE = pygame.display.get_desktop_sizes()[0]
     print(self.MONITOR_SIZE)
-    self.display = pygame.Surface((SCREEN_WIDTH//2,SCREEN_HEIGHT//2))
+    self.display = pygame.Surface((SCREEN_WIDTH//2,SCREEN_HEIGHT//2), pygame.SRCALPHA)
+    # self.ui_display = pygame.Surface((SCREEN_WIDTH//2, SCREEN_HEIGHT//2), pygame.SRCALPHA)
     self.movement = [False, False]
 
     self.assets = {
@@ -46,12 +47,20 @@ class Game():
     self.tilemap = TileMap(self, tile_size=16)
     self.tilemap.load('map.json')
 
+    self.fragment_loc = "./data/scripts/fragment.frag"
+    self.vertex_loc = "./data/scripts/vertex.vert"
+    self.noise_img1 = pygame.image.load('./data/images/misc/pnoise.png').convert_alpha()
+    self.noise_img2 = pygame.image.load('./data/images/misc/pnoise2.png').convert_alpha()
+
     flower_objs = self.tilemap.get_objs('flower')
     self.flower = Flowers(flower_objs, self.assets, self)
     self.gust = Gust()
 
+    self.scroll = []
+
     self.citizens = []
     self.water_pos = []
+    self.fire_pos = []
     for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1), ('spawners', 2)]):
       if spawner['variant'] == 0:
         self.player.pos = spawner['pos']
@@ -60,6 +69,8 @@ class Game():
       elif spawner['variant'] == 2:
         self.water_pos.append(spawner['pos'])
     
+    for fire_pos in self.tilemap.extract([('decor', 4),], True):
+      self.fire_pos.append(fire_pos)
     self.water_pos = sorted(self.water_pos)
     self.waters_rects = []
     for pos in self.water_pos:
@@ -97,7 +108,9 @@ class Game():
       self.waters.append(Water((rect[0], rect[1]), rect[2]//4, rect[3]))
     self.true_scroll = [0,0]
     self.full_screen = False
-    self.fire_particle = Flame((91, 105))
+    self.fire_particles = []
+    for obj in self.fire_pos:
+      self.fire_particles.append(Flame((obj['pos'][0] + 10, obj['pos'][1] + 2)))
     # self.scroll = [0,0]
 
   @pygs
@@ -105,7 +118,7 @@ class Game():
       self.clock.tick(60)
       time = pygame.time.get_ticks()
       # print(self.clock.get_fps())
-      self.display.fill((0,0,0))
+      self.display.fill((0,0,0,0))
 
       if not self.full_screen:
         self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 30
@@ -113,29 +126,29 @@ class Game():
       else:
         self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 30
         self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 30
-      scroll = self.true_scroll.copy()
-      scroll[0] = int(scroll[0])
-      scroll[1] = int(scroll[1])
+      self.scroll = self.true_scroll.copy()
+      self.scroll[0] = int(self.scroll[0])
+      self.scroll[1] = int(self.scroll[1])
 
-      self.tilemap.render(self.display, scroll)
+      self.tilemap.render(self.display, self.scroll)
 
-      self.flower.update(self.player.rect(), self.display, scroll, time, self.gust.wind())
+      self.flower.update(self.player.rect(), self.display, self.scroll, time, self.gust.wind())
 
       self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-      self.player.render(self.display, scroll)
-      
-      self.fire_particle.draw_flame(self.display, [0,0])
+      self.player.render(self.display, self.scroll)
+      for particle in self.fire_particles:
+        particle.draw_flame(self.display, self.scroll)
 
       # for rect in self.waters_rects:
       #   pygame.draw.rect(self.display, (0,0,200), [rect[0] - scroll[0], rect[1] - scroll[1], rect[2], rect[3]])
 
       for water in self.waters:
-        water.update(scroll, self.player.rect())
-        water.draw(self.display, scroll)
+        water.update(self.scroll, self.player.rect())
+        water.draw(self.display, self.scroll)
 
       for citizen in self.citizens:
         citizen.update(self.tilemap, (0,0))
-        citizen.render(self.display, offset=scroll)
+        citizen.render(self.display, offset=self.scroll)
 
       self.gust.update(time)
 

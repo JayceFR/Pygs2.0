@@ -22,7 +22,7 @@ def load_imgs(path, color_key=(0,0,0), scale=0, scale_coords=None):
 
 #load a spritesheet
 def load_spritesheet(path, number_of_frames, scale = 0, color_key = (0,0,0), scale_coords = None):
-  sheet = load_img(path).convert_alpha()
+  sheet = load_img(path).convert()
   width = sheet.get_width()
   height = sheet.get_height()
   animation = []
