@@ -3,8 +3,8 @@ import pygame, os
 BASE_IMG_PATH = './data/images/'
 
 #load a specific image
-def load_img(path, color_key = (0,0,0), scale=0, scale_coords=None):
-  curr_img = pygame.image.load(BASE_IMG_PATH + path).convert()
+def load_img(path, color_key = (0,0,0,0), scale=0, scale_coords=None):
+  curr_img = pygame.image.load(BASE_IMG_PATH + path).convert_alpha()
   if scale > 0 or scale_coords:
     if not scale_coords:
       curr_img = pygame.transform.scale(curr_img, (curr_img.get_width()*scale, curr_img.get_height()*scale))
@@ -22,12 +22,14 @@ def load_imgs(path, color_key=(0,0,0), scale=0, scale_coords=None):
 
 #load a spritesheet
 def load_spritesheet(path, number_of_frames, scale = 0, color_key = (0,0,0), scale_coords = None):
-  sheet = load_img(path).convert()
+  # sheet = pygame.image.load(BASE_IMG_PATH + path).convert_alpha()
+  sheet = load_img(path, color_key)
+  # sheet.set_colorkey(color_key)
   width = sheet.get_width()
   height = sheet.get_height()
   animation = []
   for x in range(number_of_frames):
-    image = pygame.Surface((width//number_of_frames, height)).convert()
+    image = pygame.Surface((width//number_of_frames, height)).convert_alpha()
     image.blit(sheet, (0,0), ((x * width//number_of_frames), 0, width//number_of_frames, height))
     if scale > 0:
       image = pygame.transform.scale(image, (image.get_width() * scale, height * scale))

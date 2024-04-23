@@ -10,16 +10,18 @@ from pygs.ui.hud import Hud
 from pygs.map.map import TileMap
 from pygs.utils.decorators import pygs
 from pygs.ui.fire import Flame
-SCREEN_WIDTH = 1536 // 2
-SCREEN_HEIGHT = 960 // 2
+SCREEN_WIDTH = 1000 
+SCREEN_HEIGHT = 600
+
+pygame.init()
 
 class Game():
   def __init__(self):
     pygame.display.set_caption("Pygs2.0")
-    self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.OPENGL | pygame.DOUBLEBUF)
+    self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.OPENGL | pygame.DOUBLEBUF )
     self.MONITOR_SIZE = pygame.display.get_desktop_sizes()[0]
     print(self.MONITOR_SIZE)
-    self.display = pygame.Surface((SCREEN_WIDTH//2,SCREEN_HEIGHT//2), pygame.SRCALPHA)
+    self.display = pygame.Surface((SCREEN_WIDTH//2,SCREEN_HEIGHT//2))
     # self.ui_display = pygame.Surface((SCREEN_WIDTH//2, SCREEN_HEIGHT//2), pygame.SRCALPHA)
     self.movement = [False, False]
 
@@ -29,14 +31,15 @@ class Game():
       'decor': load_imgs('tiles/decor', scale=1, color_key=(255,255,255)),
       'stone': load_imgs('tiles/stone', scale=1),
       'flower': load_imgs('tiles/flower', (255,255,255)),
-      'citizen/idle' : Animation(load_spritesheet('entities/citizen/idle.png', 2, color_key=(255,255,255)), img_dur=15),
+      'citizen/idle' : Animation(load_imgs('entities/citizen/idle'), img_dur=15),
       'citizen/run': Animation([load_img('entities/citizen/player3.png', scale=1, color_key=(255,255,255)),],),
-      'player/idle': Animation(load_spritesheet('entities/player/idle.png', 4, scale=0.8, color_key=(255,255,255)), img_dur=10),
-      'player/run': Animation(load_spritesheet('entities/player/run.png', 4, scale=0.8, color_key=(0,0,0)), img_dur=10),
-      # 'player/idle': Animation([load_img('entities/player/player3.png', scale=1, color_key=(255,255,255)),]),
-      # 'player/run': Animation([load_img('entities/player/player3.png', scale=1, color_key=(255,255,255)),]),
-      'player/jump': Animation([load_img('entities/player/player.png', scale=0.8, color_key=(0,0,0)),])
+      'player/idle' : Animation(load_imgs('entities/player/idle', scale=0.8), img_dur=10),
+      'player/run' : Animation(load_imgs('entities/player/run', scale=0.8), img_dur=10),
+      'player/jump': Animation(load_imgs('entities/player/jump', scale=0.8, color_key=(0,0,0)))
     }
+
+    print(self.assets['decor'][0].get_alpha())
+    print(load_imgs('entities/citizen/idle')[0].get_alpha())
 
     self.hud = Hud(self)
 
@@ -118,14 +121,14 @@ class Game():
       self.clock.tick(60)
       time = pygame.time.get_ticks()
       # print(self.clock.get_fps())
-      self.display.fill((0,0,0,0))
+      self.display.fill((0,0,0))
 
       if not self.full_screen:
-        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 30
-        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 30
+        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 20
+        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
       else:
-        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 30
-        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 30
+        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 20
+        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
       self.scroll = self.true_scroll.copy()
       self.scroll[0] = int(self.scroll[0])
       self.scroll[1] = int(self.scroll[1])
