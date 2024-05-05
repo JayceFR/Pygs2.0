@@ -9,6 +9,7 @@ def pygs(function):
     run = True
     uniform = {'noise_tex1': self.noise_img1, 'noise_tex2' : self.noise_img2}
     start_time = time.time()
+    self.sfx['ambience'].play(-1)
     while run:
       function(self)
       surf = self.display.copy()

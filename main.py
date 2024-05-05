@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from pygame.locals import *
 from pygs.entities.gust import Gust
 from pygs.entities.player import Player
@@ -38,6 +38,12 @@ class Game():
       'player/jump': Animation(load_imgs('entities/player/jump', scale=0.8, color_key=(0,0,0)))
     }
 
+    self.sfx = {
+      'ambience': pygame.mixer.Sound('./data/music/ambience.wav')
+    }
+
+    self.sfx['ambience'].set_volume(0.05)
+
     print(self.assets['decor'][0].get_alpha())
     print(load_imgs('entities/citizen/idle')[0].get_alpha())
 
@@ -64,6 +70,7 @@ class Game():
     self.citizens = []
     self.water_pos = []
     self.fire_pos = []
+
     for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1), ('spawners', 2)]):
       if spawner['variant'] == 0:
         self.player.pos = spawner['pos']
