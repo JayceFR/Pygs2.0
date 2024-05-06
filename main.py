@@ -128,7 +128,7 @@ class Game():
       self.clock.tick(60)
       time = pygame.time.get_ticks()
       # print(self.clock.get_fps())
-      self.display.fill((0,0,0))
+      self.display.fill((2,2,2))
 
       if not self.full_screen:
         self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 20
