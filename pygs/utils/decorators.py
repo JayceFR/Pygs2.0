@@ -3,8 +3,9 @@ from pygs.shader.shader import Shader
 import pygame
 import time
 from pygame.locals import *
+
 def pygs(function):
-  def clean(self=None):
+  def game(self=None):
     shader_obj = Shader(True, self.vertex_loc, self.fragment_loc)
     run = True
     uniform = {'noise_tex1': self.noise_img1, 'noise_tex2' : self.noise_img2}
@@ -24,4 +25,5 @@ def pygs(function):
       pygame.display.flip()
       run = self.hud.get_controls()['run']
     print("hello")
-  return clean
+  return game
+

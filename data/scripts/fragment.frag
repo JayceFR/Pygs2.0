@@ -41,13 +41,13 @@ float seamlessNoise(vec2 uv, float tileSize, sampler2D noise) {
 void foreground(){
     vec4 tex_color = texture(tex, uvs);
     vec2 px_uvs = vec2(floor(uvs.x * 500) / 500, floor(uvs.y * 300) / 300);
-    vec2 px_uvs2 = vec2((floor(uvs.x * 500) + cam_scroll.x * 1)/500, (floor(uvs.y * 300) + cam_scroll.y * 1)/300);
+    vec2 px_uvs2 = vec2((floor(uvs.x * 500) + cam_scroll.x * 1.3)/500, (floor(uvs.y * 300) + cam_scroll.y * 1)/300);
     vec2 px_uvs3 = vec2((floor(uvs.x * 500) + cam_scroll.x * 1)/500, (floor(uvs.y * 300) + cam_scroll.y * 1)/300);
     f_color = tex_color;
     float depth = seamlessNoise(px_uvs2  + scroll * itime * 2.6 , 16.0, noise_tex1) * seamlessNoise(px_uvs2  + scroll2 * itime * 0.3, 15.0, noise_tex2) ;
     float depth2 = seamlessNoise(px_uvs3  + scroll3 * sin(itime) * 0.6 * cos(itime) * 0.6 , 16.0, noise_tex1) * seamlessNoise(px_uvs3  + scroll4 * cos(itime) * 0.6, 16.0, noise_tex1) ;
-    vec3 fog_color = vec3(0.25,0.24,0.25);
-    vec3 fog_color2 = vec3(0.2, 0.2, 0.2);
+    vec3 fog_color = vec3(0.35,0.34,0.35);
+    vec3 fog_color2 = vec3(0.3, 0.3, 0.3);
     float fogFactor = exp(-0.3 + depth);
     if (depth < 0.5){
         f_color = vec4(mix(fog_color, f_color.rgb, fogFactor), 1.0);

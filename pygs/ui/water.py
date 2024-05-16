@@ -95,3 +95,65 @@ class Water():
     y1 = list(y_new)
     points = [POINT(x1[i], y1[i]) for i in range(len(x1))]
     return points
+  
+class WaterManager():
+  def __init__(self):
+    self.waters = []
+    self.water_loc = {}
+    self.water_pos_list = []
+    self.cache = []
+  
+  def update(self, game_obj):
+    self.cache = []
+    for x in range(game_obj.scroll[0] // game_obj.tilemap.tile_size, (game_obj.scroll[0] + game_obj.display.get_width()) // game_obj.tilemap.tile_size + 1):
+      for y in range(game_obj.scroll[1] // game_obj.tilemap.tile_size, (game_obj.scroll[1] + game_obj.display.get_height()) // game_obj.tilemap.tile_size + 1):
+        if str(x) + ";" + str(y) in self.water_loc:
+          for water in self.water_loc[str(x) + ";" + str(y)]:
+            if water not in self.cache:
+              self.cache.append(water)
+              water.update(game_obj.scroll, game_obj.player.rect())
+              water.draw(game_obj.display, game_obj.scroll)
+
+  def load(self, water_pos, game):
+    water_pos = sorted(water_pos)
+    water_rects = []
+    for pos in water_pos:
+      if not water_rects:
+        #loop to check for the height
+        found = True
+        height = 0
+        while found:
+          if [pos[0], pos[1] + 16 * (height + 1)] in water_pos:
+            water_pos.remove([pos[0], pos[1] + 16 * (height + 1)])
+            height += 1
+          else:
+            found = False
+        water_rects.append([pos[0], pos[1], 16, 16 * (height + 1)])
+      else:
+        #check if the current tile lies consecutively after the previous
+        #get the height
+        found = True
+        height = 0
+        while found:
+          if [pos[0], pos[1] + 16 * (height + 1)] in water_pos:
+            water_pos.remove([pos[0], pos[1] + 16 * (height + 1)])
+            height += 1
+          else:
+            found = False
+        # print("I am here", height)
+        if water_rects[-1][0] + water_rects[-1][2] == pos[0]:
+          water_rects[-1][2] += 16
+          if (height + 1) * 16 > water_rects[-1][3]:
+            water_rects[-1][3] = (height + 1) * 16
+        else:
+          water_rects.append([pos[0], pos[1], 16, 16 * (height+1)])
+    for rect in water_rects:
+      obj = Water((rect[0], rect[1]), rect[2]//4, rect[3])
+      for x in range(rect[0], rect[0] + rect[2], 16):
+        grid_loc = (int((x) // game.tilemap.tile_size), int((rect[1] + rect[3]//2) // game.tilemap.tile_size))
+        if self.water_loc.get(str(grid_loc[0]) + ";" + str(grid_loc[1])):
+          self.water_loc[str(grid_loc[0]) + ";" + str(grid_loc[1])].append(obj)
+        else:
+          self.water_loc[str(grid_loc[0]) + ";" + str(grid_loc[1])] = [Water((rect[0], rect[1]), rect[2]//4, rect[3]),]
+    self.water_pos_list = list(self.water_loc)
+    

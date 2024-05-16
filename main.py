@@ -4,7 +4,7 @@ from pygs.entities.gust import Gust
 from pygs.entities.player import Player
 from pygs.entities.citizien import Citizen
 from pygs.entities.flower import Flowers
-from pygs.ui.water import Water
+from pygs.ui.water import WaterManager
 from pygs.utils.images import load_img, load_imgs, load_spritesheet, Animation
 from pygs.ui.hud import Hud
 from pygs.map.map import TileMap
@@ -79,43 +79,11 @@ class Game():
       elif spawner['variant'] == 2:
         self.water_pos.append(spawner['pos'])
     
+    self.water_manager = WaterManager()
+    self.water_manager.load(self.water_pos, self)
     for fire_pos in self.tilemap.extract([('decor', 4),], True):
       self.fire_pos.append(fire_pos)
-    self.water_pos = sorted(self.water_pos)
-    self.waters_rects = []
-    for pos in self.water_pos:
-      if not self.waters_rects:
-        #loop to check for the height
-        found = True
-        height = 0
-        while found:
-          if [pos[0], pos[1] + 16 * (height + 1)] in self.water_pos:
-            self.water_pos.remove([pos[0], pos[1] + 16 * (height + 1)])
-            height += 1
-          else:
-            found = False
-        self.waters_rects.append([pos[0], pos[1], 16, 16 * (height + 1)])
-      else:
-        #check if the current tile lies consecutively after the previous
-        #get the height
-        found = True
-        height = 0
-        while found:
-          if [pos[0], pos[1] + 16 * (height + 1)] in self.water_pos:
-            self.water_pos.remove([pos[0], pos[1] + 16 * (height + 1)])
-            height += 1
-          else:
-            found = False
-        # print("I am here", height)
-        if self.waters_rects[-1][0] + self.waters_rects[-1][2] == pos[0]:
-          self.waters_rects[-1][2] += 16
-          if (height + 1) * 16 > self.waters_rects[-1][3]:
-            self.waters_rects[-1][3] = (height + 1) * 16
-        else:
-          self.waters_rects.append([pos[0], pos[1], 16, 16 * (height+1)])
-    self.waters = []
-    for rect in self.waters_rects:
-      self.waters.append(Water((rect[0], rect[1]), rect[2]//4, rect[3]))
+    
     self.true_scroll = [0,0]
     self.full_screen = False
     self.fire_particles = []
@@ -152,9 +120,7 @@ class Game():
       # for rect in self.waters_rects:
       #   pygame.draw.rect(self.display, (0,0,200), [rect[0] - scroll[0], rect[1] - scroll[1], rect[2], rect[3]])
 
-      for water in self.waters:
-        water.update(self.scroll, self.player.rect())
-        water.draw(self.display, self.scroll)
+      self.water_manager.update(self)
 
       for citizen in self.citizens:
         citizen.update(self.tilemap, (0,0))
