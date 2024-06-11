@@ -5,6 +5,7 @@ from pygs.entities.player import Player
 from pygs.entities.citizien import Citizen
 from pygs.entities.flower import Flowers
 from pygs.ui.water import WaterManager
+from pygs.ui.fireflies import Fireflies
 from pygs.utils.images import load_img, load_imgs, load_spritesheet, Animation
 from pygs.ui.hud import Hud
 from pygs.map.map import TileMap
@@ -83,6 +84,12 @@ class Game():
     self.water_manager.load(self.water_pos, self)
     for fire_pos in self.tilemap.extract([('decor', 4),], True):
       self.fire_pos.append(fire_pos)
+
+    self.glow_img = pygame.Surface((255,255))
+    self.glow_img.fill((174*0.2, 226*0.2, 255*0.3))
+    img = pygame.image.load('./data/images/misc/light.png').convert()
+    self.glow_img.blit(img, (0,0), special_flags=pygame.BLEND_RGBA_MULT)
+    self.fireflies = Fireflies(SCREEN_WIDTH//2,SCREEN_HEIGHT//2, self.glow_img)
     
     self.true_scroll = [0,0]
     self.full_screen = False
@@ -127,6 +134,7 @@ class Game():
         citizen.render(self.display, offset=self.scroll)
 
       self.gust.update(time)
+      self.fireflies.recursive_call(time,self.display,self.scroll)
 
       self.hud.events()
       controls = self.hud.get_controls()
