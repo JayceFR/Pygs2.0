@@ -32,6 +32,7 @@ class Game():
       'grass' : load_imgs('tiles/grass', scale=1),
       'decor': load_imgs('tiles/decor', scale=1, color_key=(255,255,255)),
       'stone': load_imgs('tiles/stone', scale=1),
+      'lamp': load_imgs('tiles/lamp', scale=2, color_key=(255,255,255)),
       'flower': load_imgs('tiles/flower', (255,255,255)),
       'citizen/idle' : Animation(load_imgs('entities/citizen/idle'), img_dur=15),
       'citizen/run': Animation([load_img('entities/citizen/player3.png', scale=1, color_key=(255,255,255)),],),
@@ -93,10 +94,18 @@ class Game():
     self.fireflies = Fireflies(SCREEN_WIDTH//2,SCREEN_HEIGHT//2, self.glow_img)
 
     self.lamp_img = pygame.Surface((730, 1095))
-    self.lamp_img.fill((255*0.6, 255*0.6, 255*0.6))
+    self.lamp_img.fill((255*0.3, 255*0.3, 255*0.3))
     lamp_img = pygame.image.load('./data/images/misc/lamp2.png').convert()
     self.lamp_img.blit(lamp_img, (0,0), special_flags=BLEND_RGBA_MULT)
-    self.lamp_img = pygame.transform.scale(self.lamp_img, (self.lamp_img.get_width()//8, self.lamp_img.get_height()//6))
+    self.lamp_glow_img = pygame.Surface((255,255))
+    self.lamp_glow_img.fill((255*0.3, 255*0.3, 255*0.3))
+    self.lamp_glow_img.blit(img, (0,0), special_flags=BLEND_RGBA_MULT)
+    self.lamp_glow_img = pygame.transform.scale(self.lamp_glow_img, (60,60))
+    self.lamp_img = pygame.transform.scale(self.lamp_img, (self.lamp_img.get_width()//10, self.lamp_img.get_height()//10))
+
+    self.lamp_positions = []
+    for lamp_pos in self.tilemap.extract([('lamp',0),], True):
+      self.lamp_positions.append(lamp_pos)
 
     leaf_img = pygame.image.load('./data/images/ui/leaf.png').convert()
     leaf_img.set_colorkey((0,0,0))
@@ -120,8 +129,8 @@ class Game():
         self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
         self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
       else:
-        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
-        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
+        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//7) / 5
+        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//7) / 20
       self.scroll = self.true_scroll.copy()
       self.scroll[0] = int(self.scroll[0])
       self.scroll[1] = int(self.scroll[1])
@@ -145,7 +154,10 @@ class Game():
         citizen.render(self.display, offset=self.scroll)
       
       #lamp img 
-      # self.display.blit(self.lamp_img, (45,45), special_flags=BLEND_RGBA_ADD)
+      for lamp in self.lamp_positions:
+        pos = lamp['pos']
+        self.display.blit(self.lamp_img, (pos[0] - self.scroll[0] - 24, pos[1] - self.scroll[1] + 30), special_flags=BLEND_RGBA_ADD)
+        self.display.blit(self.lamp_glow_img, (pos[0] - self.scroll[0] - 17, pos[1] - self.scroll[1] - 10), special_flags=BLEND_RGBA_ADD)
 
       self.gust.update(time)
       self.fireflies.recursive_call(time,self.display,self.scroll)

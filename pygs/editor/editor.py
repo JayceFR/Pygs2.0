@@ -21,6 +21,7 @@ class Editor():
     self.assets = {
       'grass' : load_imgs('tiles/grass', scale=1),
       'decor': load_imgs('tiles/decor', scale=1, color_key=(255,255,255)),
+      'lamp': load_imgs('tiles/lamp', scale=2, color_key=(255,255,255)),
       'stone': load_imgs('tiles/stone', scale=1),
       'flower': load_imgs('tiles/flower', (255,255,255)),
       'spawners': load_imgs('tiles/spawners', (0,0,0)),
