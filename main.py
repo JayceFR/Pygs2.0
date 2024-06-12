@@ -4,6 +4,7 @@ from pygs.entities.gust import Gust
 from pygs.entities.player import Player
 from pygs.entities.citizien import Citizen
 from pygs.entities.flower import Flowers
+from pygs.ui.leaves import LeafManager
 from pygs.ui.water import WaterManager
 from pygs.ui.fireflies import Fireflies
 from pygs.utils.images import load_img, load_imgs, load_spritesheet, Animation
@@ -90,6 +91,16 @@ class Game():
     img = pygame.image.load('./data/images/misc/light.png').convert()
     self.glow_img.blit(img, (0,0), special_flags=pygame.BLEND_RGBA_MULT)
     self.fireflies = Fireflies(SCREEN_WIDTH//2,SCREEN_HEIGHT//2, self.glow_img)
+
+    self.lamp_img = pygame.Surface((730, 1095))
+    self.lamp_img.fill((255*0.6, 255*0.6, 255*0.6))
+    lamp_img = pygame.image.load('./data/images/misc/lamp2.png').convert()
+    self.lamp_img.blit(lamp_img, (0,0), special_flags=BLEND_RGBA_MULT)
+    self.lamp_img = pygame.transform.scale(self.lamp_img, (self.lamp_img.get_width()//8, self.lamp_img.get_height()//6))
+
+    leaf_img = pygame.image.load('./data/images/ui/leaf.png').convert()
+    leaf_img.set_colorkey((0,0,0))
+    self.leaf = LeafManager(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, leaf_img )
     
     self.true_scroll = [0,0]
     self.full_screen = False
@@ -106,10 +117,10 @@ class Game():
       self.display.fill((2,2,2))
 
       if not self.full_screen:
-        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 20
+        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
         self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
       else:
-        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 20
+        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
         self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
       self.scroll = self.true_scroll.copy()
       self.scroll[0] = int(self.scroll[0])
@@ -132,9 +143,13 @@ class Game():
       for citizen in self.citizens:
         citizen.update(self.tilemap, (0,0))
         citizen.render(self.display, offset=self.scroll)
+      
+      #lamp img 
+      # self.display.blit(self.lamp_img, (45,45), special_flags=BLEND_RGBA_ADD)
 
       self.gust.update(time)
       self.fireflies.recursive_call(time,self.display,self.scroll)
+      self.leaf.recursive_call(time, self.display, self.scroll, self.gust.wind())
 
       self.hud.events()
       controls = self.hud.get_controls()

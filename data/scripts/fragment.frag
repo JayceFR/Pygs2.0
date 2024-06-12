@@ -46,8 +46,8 @@ void foreground(){
     f_color = tex_color;
     float depth = seamlessNoise(px_uvs2  + scroll * itime * 2.6 , 16.0, noise_tex1) * seamlessNoise(px_uvs2  + scroll2 * itime * 0.3, 15.0, noise_tex2) ;
     float depth2 = seamlessNoise(px_uvs3  + scroll3 * sin(itime) * 0.6 * cos(itime) * 0.6 , 16.0, noise_tex1) * seamlessNoise(px_uvs3  + scroll4 * cos(itime) * 0.6, 16.0, noise_tex1) ;
-    vec3 fog_color = vec3(0.35,0.34,0.35);
-    vec3 fog_color2 = vec3(0.3, 0.3, 0.3);
+    vec3 fog_color = vec3(0.15,0.14,0.35);
+    vec3 fog_color2 = vec3(0.1, 0.1, 0.3);
     float fogFactor = exp(-0.3 + depth);
     if (depth < 0.5){
         f_color = vec4(mix(fog_color, f_color.rgb, fogFactor), 1.0);

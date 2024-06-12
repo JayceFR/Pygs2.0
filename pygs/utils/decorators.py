@@ -13,6 +13,7 @@ def pygs(function):
     self.sfx['ambience'].play(-1)
     while run:
       function(self)
+      # self.screen.fill((0,0,0,0))
       surf = self.display.copy()
       if not self.full_screen:
         surf = pygame.transform.scale(surf, pygame.display.get_window_size())
