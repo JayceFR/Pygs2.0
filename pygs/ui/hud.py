@@ -34,7 +34,7 @@ class Hud():
                 if event.button == 1:
                     self.return_dict["l_click"] = True
                     if self.obj.__class__.__name__ == "Editor":
-                        if not self.obj.ongrid:
+                        if not pygame.rect.Rect(0,0,100,600).collidepoint(self.obj.mouse_pos) and not self.obj.ongrid:
                             self.obj.toggle_offgrid()
                 if event.button == 3:   
                     self.return_dict["r_click"] = True

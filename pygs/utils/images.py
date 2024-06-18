@@ -14,9 +14,13 @@ def load_img(path, color_key = (0,0,0,0), scale=0, scale_coords=None):
   return curr_img
 
 #load images from a folder
-def load_imgs(path, color_key=(0,0,0), scale=0, scale_coords=None):
+def load_imgs(path, color_key=(0,0,0), scale=0, scale_coords=None, args={}):
   images = []
   for img_name in sorted(os.listdir(BASE_IMG_PATH + path)):
+    if img_name in args:
+      print("iam")
+      scale = args[img_name][0]
+      scale_coords = args[img_name][1]
     images.append(load_img(path + "/" + img_name, color_key=color_key, scale=scale, scale_coords=scale_coords))
   return images 
 

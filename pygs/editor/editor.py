@@ -20,7 +20,7 @@ class Editor():
 
     self.assets = {
       'grass' : load_imgs('tiles/grass', scale=1),
-      'decor': load_imgs('tiles/decor', scale=1, color_key=(255,255,255)),
+      'decor': load_imgs('tiles/decor', scale=1, color_key=(255,255,255), args={'tree3.png':[1.5,None], 'tree4.png':[1.5,None]}),
       'lamp': load_imgs('tiles/lamp', scale=2, color_key=(255,255,255)),
       'stone': load_imgs('tiles/stone', scale=1),
       'flower': load_imgs('tiles/flower', (255,255,255)),
@@ -188,6 +188,7 @@ class Editor():
             if hover_tile > -1:
               self.tile_variant = hover_tile
           else:
+            print("i m here")
             #right pane
             self.clicking = True
       else:

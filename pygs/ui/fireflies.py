@@ -53,7 +53,7 @@ class Fireflies():
         self.height_of_entire_game = height_of_entire_game * 2
         self.fireflies = []
         self.start_time = time.time()
-        for x in range(15):
+        for x in range(10):
             # self.fireflies.append(FireFly(random.randint(-100,self.width_of_entire_game)//2, random.randint(-100,self.height_of_entire_game)//2, 1))
             self.fireflies.append(FireFly(random.random() * width_of_entire_game, random.random() * height_of_entire_game, 1, width_of_entire_game, height_of_entire_game, glow_img))
             
