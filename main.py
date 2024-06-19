@@ -12,7 +12,7 @@ from pygs.ui.hud import Hud
 from pygs.map.map import TileMap
 from pygs.utils.decorators import pygs
 from pygs.ui.fire import Flame
-SCREEN_WIDTH = 1000 
+SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
 pygame.init()
@@ -38,7 +38,8 @@ class Game():
       'citizen/run': Animation([load_img('entities/citizen/player3.png', scale=1, color_key=(255,255,255)),],),
       'player/idle' : Animation(load_imgs('entities/player/idle', scale=0.8), img_dur=10),
       'player/run' : Animation(load_imgs('entities/player/run', scale=0.8), img_dur=6),
-      'player/jump': Animation(load_imgs('entities/player/jump', scale=0.8, color_key=(0,0,0)))
+      'player/jump': Animation(load_imgs('entities/player/jump', scale=0.8, color_key=(0,0,0))),
+      'particles/particle' : Animation(load_imgs('particle', scale=2), img_dur=6, loop=False)
     }
 
     self.sfx = {
@@ -111,6 +112,8 @@ class Game():
     leaf_img.set_colorkey((0,0,0))
     self.leaf = LeafManager(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, leaf_img )
     
+    self.particles = []
+
     self.true_scroll = [0,0]
     self.full_screen = False
     self.fire_particles = []

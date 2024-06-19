@@ -14,6 +14,13 @@ def pygs(function):
     while run:
       function(self)
       # self.screen.fill((0,0,0,0))
+      #particles
+      for particle in self.particles.copy():
+        kill = particle.update()
+        particle.render(self.display, offset=self.scroll)
+        if kill:
+          self.particles.remove(particle)
+
       surf = self.display.copy()
       if not self.full_screen:
         surf = pygame.transform.scale(surf, pygame.display.get_window_size())

@@ -52,6 +52,9 @@ class Hud():
                     if self.obj.__class__.__name__ == "Game":
                         self.obj.player.jump()
                     self.return_dict["jump"] = True
+                if event.key == pygame.K_x or event.key == pygame.K_e:
+                    if self.obj.__class__.__name__ == "Game":
+                        self.obj.player.dash()
                 if event.key == pygame.K_w or event.key == pygame.K_UP:
                     self.return_dict["up"] = True
                 if event.key == pygame.K_s or event.key == pygame.K_DOWN:
