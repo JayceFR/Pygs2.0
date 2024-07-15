@@ -1,6 +1,6 @@
 import pygame, numpy
 from scipy.interpolate import interp1d
-POINT = pygame.Vector2
+# POINT = pygame.Vector2
 from pygame.locals import *
 pygame.init()
 class Molecule():
@@ -57,12 +57,10 @@ class Water():
           molecule.colliding = False
       molecule.update()
     self.spread_wave()
-    self.points = [POINT(self.pos[0] - scroll[0], self.pos[1] + self.height - scroll[1])]
+    self.points = [[self.pos[0] - scroll[0], self.pos[1] + self.height - scroll[1]]]
     for molecule in self.molecules:
-      self.points.append(POINT(molecule.rect.x - scroll[0], molecule.height - scroll[1]))
-    self.points.append(POINT(self.pos[0] + self.radius * (self.number_of_molecules + 1) - scroll[0] - 6, self.pos[1] + self.height - scroll[1]))
-    # self.points = self.get_curve(self.points)
-    # self.points.extend([POINT(self.pos[0] + self.radius * (self.number_of_molecules-1) - 16 - scroll[0], self.pos[1] + self.height - scroll[1]), POINT(self.pos[0] - scroll[0], self.pos[1] + self.height - scroll[1])])
+      self.points.append([molecule.rect.x - scroll[0], molecule.height - scroll[1]])
+    self.points.append([self.pos[0] + self.radius * (self.number_of_molecules + 1) - scroll[0] - 6, self.pos[1] + self.height - scroll[1]])
     
   def spread_wave(self):
     spread = 0.08
@@ -93,7 +91,7 @@ class Water():
     y_new = f(x_new)
     x1 = list(x_new)
     y1 = list(y_new)
-    points = [POINT(x1[i], y1[i]) for i in range(len(x1))]
+    points = [[x1[i], y1[i]] for i in range(len(x1))]
     return points
   
 class WaterManager():
@@ -109,8 +107,8 @@ class WaterManager():
       for y in range(game_obj.scroll[1] // game_obj.tilemap.tile_size, (game_obj.scroll[1] + game_obj.display.get_height()) // game_obj.tilemap.tile_size + 1):
         if str(x) + ";" + str(y) in self.water_loc:
           for water in self.water_loc[str(x) + ";" + str(y)]:
-            if water not in self.cache:
-              self.cache.append(water)
+            # if water not in self.cache:
+            #   self.cache.append(water)
               water.update(game_obj.scroll, game_obj.player.rect())
               water.draw(game_obj.display, game_obj.scroll)
 

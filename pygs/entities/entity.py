@@ -58,7 +58,7 @@ class PhysicsEntity:
 
         self.last_movement = movement
         
-        self.velocity[1] = min(5, self.velocity[1] + 0.1)
+        self.velocity[1] = min(5, self.velocity[1] + 0.12)
         
         if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0

@@ -30,6 +30,7 @@ class Game():
     self.assets = {
       'player' : load_img('entities/player/player.png', scale=0.8),
       'grass' : load_imgs('tiles/grass', scale=1),
+      'boomerang' : load_img('entities/boomerang/0.png', scale=0.9),
       'decor': load_imgs('tiles/decor', scale=1, color_key=(255,255,255), args={'tree3.png':[1.5,None], 'tree4.png':[1.5,None]}),
       'stone': load_imgs('tiles/stone', scale=1),
       'lamp': load_imgs('tiles/lamp', scale=2, color_key=(255,255,255)),
