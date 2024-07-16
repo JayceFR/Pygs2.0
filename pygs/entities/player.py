@@ -9,6 +9,7 @@ class Player(PhysicsEntity):
         self.jumps = 1
         self.wall_slide = False
         self.dashing = 0
+        self.speed = [3,2.5]
     
     def update(self, tilemap, movement = (0,0)):
         super().update(tilemap, movement=movement)
