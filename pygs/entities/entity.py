@@ -23,12 +23,12 @@ class PhysicsEntity:
             self.action = action
             self.animation = self.game.assets[self.type + '/'+ self.action].copy()
         
-    def update(self, tilemap, movement=(0, 0)):
+    def update(self, tilemap, movement=(0, 0), dt = 1):
         self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
         
         frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
         
-        self.pos[0] += frame_movement[0] * self.speed[0]
+        self.pos[0] += frame_movement[0] * self.speed[0] * dt
         entity_rect = self.rect()
         for rect in tilemap.physics_around(self.pos):
             if entity_rect.colliderect(rect):
@@ -40,7 +40,7 @@ class PhysicsEntity:
                     self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
         
-        self.pos[1] += frame_movement[1] * self.speed[1]
+        self.pos[1] += frame_movement[1] * self.speed[1] * dt
         entity_rect = self.rect()
         for rect in tilemap.physics_around(self.pos):
             if entity_rect.colliderect(rect):

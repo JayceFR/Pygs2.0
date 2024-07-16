@@ -7,7 +7,7 @@ class Citizen(PhysicsEntity):
 
     self.walking = 0
   
-  def update(self, tilemap, movement=(0,0)):
+  def update(self, tilemap, movement=(0,0), dt=1):
     if self.walking:
       if tilemap.solid_check((self.rect().centerx + (-self.size[0]//2 if self.flip else self.size[0]//2), self.pos[1] + self.size[1])):
         if (self.collisions['right'] or self.collisions['left']):
@@ -20,7 +20,7 @@ class Citizen(PhysicsEntity):
     elif random.random() < 0.01:
       self.walking = random.randint(30,120)
     
-    super().update(tilemap, movement=movement)
+    super().update(tilemap, movement=movement, dt=dt)
 
     if movement[0] != 0:
       self.set_action('run')

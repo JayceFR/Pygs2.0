@@ -46,7 +46,7 @@ class Settings():
       conf = self.default_conf()
       self.controls_keyboard = self.convert_to_set(conf["controls_keyboard"])
       self.music = conf["music"] 
-
+  
   def save(self):
     file = open(self.path, "w")
     json.dump({"controls_keyboard" : self.convert_to_dict(self.controls_keyboard), "music" : self.music}, file)

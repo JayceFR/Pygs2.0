@@ -11,8 +11,8 @@ class Player(PhysicsEntity):
         self.dashing = 0
         self.speed = [3,2.5]
     
-    def update(self, tilemap, movement = (0,0)):
-        super().update(tilemap, movement=movement)
+    def update(self, tilemap, movement = (0,0), dt = 1):
+        super().update(tilemap, movement=movement, dt=dt)
         self.air_time += 1
 
         if self.collisions['down']:

@@ -11,9 +11,12 @@ def pygs(function):
     uniform = {'noise_tex1': self.noise_img1, 'noise_tex2' : self.noise_img2}
     start_time = time.time()
     self.sfx['ambience'].play(-1)
+    last_time = time.time()
     while run:
+      self.dt = time.time() - last_time
+      self.dt *= 60
+      last_time = time.time()
       function(self)
-      # self.screen.fill((0,0,0,0))
       #particles
       for particle in self.particles.copy():
         kill = particle.update()

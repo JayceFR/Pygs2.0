@@ -18,7 +18,7 @@ class FireFly():
         self.amt_change_cooldown = 4000
         self.amt_last_update = 0
     
-    def move(self, time):
+    def move(self, time, dt = 1):
         if time - self.angel_change_last_update > self.angle_change_cooldown:
             self.angel_change_last_update = time
             self.angle += random.randint(-50,50)
@@ -27,8 +27,8 @@ class FireFly():
         if time - self.amt_last_update > self.amt_change_cooldown:
             self.amt = random.random() * 20 + 20
             self.amt_last_update = time
-        self.x += math.cos(math.radians(self.angle)) * 0.5
-        self.y += math.sin(math.radians(self.angle)) * 0.5
+        self.x += math.cos(math.radians(self.angle)) * 0.5 * dt
+        self.y += math.sin(math.radians(self.angle)) * 0.5 * dt
     
     def draw(self, display, scroll, time):
         #pygame.draw.circle(display, (255, 255, 255), (self.x - scroll[0], self.y - scroll[1]), self.radius)
@@ -57,7 +57,7 @@ class Fireflies():
             # self.fireflies.append(FireFly(random.randint(-100,self.width_of_entire_game)//2, random.randint(-100,self.height_of_entire_game)//2, 1))
             self.fireflies.append(FireFly(random.random() * width_of_entire_game, random.random() * height_of_entire_game, 1, width_of_entire_game, height_of_entire_game, glow_img))
             
-    def recursive_call(self, t, display, scroll):
+    def recursive_call(self, t, display, scroll, dt = 1):
         for firefly in self.fireflies:
-            firefly.move(t)
+            firefly.move(t, dt=dt)
             firefly.draw(display, scroll, time.time() - self.start_time)

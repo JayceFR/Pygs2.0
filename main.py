@@ -59,6 +59,8 @@ class Game():
     self.player = Player(self, [0,0], [self.assets['player'].get_width(),self.assets['player'].get_height()])
     # self.player = Player(self, [0,0], [12,])
 
+    self.dt = 0
+
     self.tilemap = TileMap(self, tile_size=16)
     self.tilemap.load('map.json')
 
@@ -132,6 +134,14 @@ class Game():
       # print(self.clock.get_fps())
       self.display.fill((2,2,2))
 
+      controls = self.hud.get_controls()
+      self.movement = [False, False]
+      if controls['left'] :
+        self.movement[0] = True
+        self.dt = 0
+      if controls['right']:
+        self.movement[1] = True
+
       if not self.full_screen:
         self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
         self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//3.7) / 20
@@ -146,7 +156,7 @@ class Game():
 
       self.flower.update(self.player.rect(), self.display, self.scroll, time, self.gust.wind())
 
-      self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
+      self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0), self.dt)
       self.player.render(self.display, self.scroll)
       for particle in self.fire_particles:
         particle.draw_flame(self.display, self.scroll)
@@ -157,7 +167,7 @@ class Game():
       self.water_manager.update(self)
 
       for citizen in self.citizens:
-        citizen.update(self.tilemap, (0,0))
+        citizen.update(self.tilemap, (0,0), self.dt)
         citizen.render(self.display, offset=self.scroll)
       
       #lamp img 
@@ -167,15 +177,10 @@ class Game():
         self.display.blit(self.lamp_glow_img, (pos[0] - self.scroll[0] - 17, pos[1] - self.scroll[1] - 10), special_flags=BLEND_RGBA_ADD)
 
       self.gust.update(time)
-      self.fireflies.recursive_call(time,self.display,self.scroll)
-      self.leaf.recursive_call(time, self.display, self.scroll, self.gust.wind())
+      self.fireflies.recursive_call(time, self.display, self.scroll, self.dt)
+      self.leaf.recursive_call(time, self.display, self.scroll, self.gust.wind(), dt=self.dt)
 
       self.hud.events(self.settings.controls_keyboard)
-      controls = self.hud.get_controls()
-      self.movement = [False, False]
-      if controls['left'] :
-        self.movement[0] = True
-      if controls['right']:
-        self.movement[1] = True
+      
 
 Game().run()
