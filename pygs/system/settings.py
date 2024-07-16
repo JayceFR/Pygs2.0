@@ -13,7 +13,10 @@ class Settings():
         "left" : [pygame.K_LEFT, pygame.K_a],
         "right" : [pygame.K_RIGHT, pygame.K_d],
         "up" : [pygame.K_UP, pygame.K_w],
-        "down" : [pygame.K_DOWN, pygame.K_s]
+        "down" : [pygame.K_DOWN, pygame.K_s],
+        "jump" : [pygame.K_SPACE, pygame.K_UP, pygame.K_w],
+        "dash" : [pygame.K_e, pygame.K_l],
+        "fullscreen" : [pygame.K_f, pygame.K_ESCAPE]
       },
       "music" : {
         "volume" : 40
@@ -43,12 +46,8 @@ class Settings():
       conf = self.default_conf()
       self.controls_keyboard = self.convert_to_set(conf["controls_keyboard"])
       self.music = conf["music"] 
-    print(self.controls_keyboard)
 
   def save(self):
     file = open(self.path, "w")
     json.dump({"controls_keyboard" : self.convert_to_dict(self.controls_keyboard), "music" : self.music}, file)
     file.close()
-
-seti= Settings()
-seti.save()

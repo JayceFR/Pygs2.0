@@ -33,5 +33,6 @@ def pygs(function):
       pygame.display.flip()
       run = self.hud.get_controls()['run']
     print("hello")
+    self.settings.save()
   return game
 

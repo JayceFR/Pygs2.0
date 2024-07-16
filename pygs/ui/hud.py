@@ -6,7 +6,7 @@ class Hud():
         self.obj = obj
         self.return_dict = {"l_click": False, "ongrid": True, "r_click": False, "run" : True, "left" : False, "right" : False, "up" : False, "down": False, "jump": False, "x_axis" : 0.0}
 
-    def events(self):
+    def events(self, key_controls):
         # self.return_dict = {"run" : True, "left" : False, "right" : False, "jump": False}
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -43,44 +43,45 @@ class Hud():
                     self.return_dict["l_click"] = False
                 if event.button == 3:
                     self.return_dict["r_click"] = False
+
+            #Keyboard controls
+            
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                if event.key in key_controls["right"]:
                     self.return_dict["right"] = True
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                if event.key in key_controls["left"]:
                     self.return_dict["left"] = True
-                if event.key == pygame.K_SPACE or event.key == pygame.K_w or event.key == pygame.K_UP:
+                if event.key in key_controls["jump"]:
                     if self.obj.__class__.__name__ == "Game":
                         self.obj.player.jump()
                     self.return_dict["jump"] = True
-                if event.key == pygame.K_x or event.key == pygame.K_e:
+                if event.key in key_controls["dash"]:
                     if self.obj.__class__.__name__ == "Game":
                         self.obj.player.dash()
-                if event.key == pygame.K_w or event.key == pygame.K_UP:
+                if event.key in key_controls["up"]:
                     self.return_dict["up"] = True
-                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                if event.key in key_controls["down"]:
                     self.return_dict["down"] = True
                 if event.key == pygame.K_LSHIFT:
                     self.return_dict['ongrid'] = not self.return_dict['ongrid']
-                if event.key == pygame.K_f:
+                if event.key in key_controls["fullscreen"]:
                     if self.obj.__class__.__name__ == "Game":
-                        # self.obj.screen = pygame.display.set_mode(self.obj.MONITOR_SIZE, pygame.FULLSCREEN )
                         pygame.display.toggle_fullscreen()
-                        print(pygame.display.get_window_size())
                         self.obj.display = pygame.Surface((pygame.display.get_window_size()[0]//2, pygame.display.get_window_size()[1]//2))
                         self.obj.full_screen = not self.obj.full_screen
                 if event.key == pygame.K_o:
                     if self.obj.__class__.__name__ == "Editor":
                         self.obj.tilemap.save('map.json')
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                if event.key in key_controls["right"]:
                     self.return_dict["right"] = False
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                if event.key in key_controls["left"]:
                     self.return_dict["left"] = False
-                if event.key == pygame.K_SPACE or event.key == pygame.K_w or event.key == pygame.K_UP:
+                if event.key == key_controls["jump"]:
                     self.return_dict["jump"] = False
-                if event.key == pygame.K_w or event.key == pygame.K_UP:
+                if event.key in key_controls["up"]:
                     self.return_dict["up"] = False
-                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                if event.key in key_controls["down"]:
                     self.return_dict["down"] = False
     
     def get_controls(self):

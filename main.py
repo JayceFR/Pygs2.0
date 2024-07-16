@@ -12,6 +12,7 @@ from pygs.ui.hud import Hud
 from pygs.map.map import TileMap
 from pygs.utils.decorators import pygs
 from pygs.ui.fire import Flame
+from pygs.system.settings import Settings
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
@@ -115,6 +116,8 @@ class Game():
     
     self.particles = []
 
+    self.settings = Settings()
+
     self.true_scroll = [0,0]
     self.full_screen = False
     self.fire_particles = []
@@ -167,7 +170,7 @@ class Game():
       self.fireflies.recursive_call(time,self.display,self.scroll)
       self.leaf.recursive_call(time, self.display, self.scroll, self.gust.wind())
 
-      self.hud.events()
+      self.hud.events(self.settings.controls_keyboard)
       controls = self.hud.get_controls()
       self.movement = [False, False]
       if controls['left'] :
