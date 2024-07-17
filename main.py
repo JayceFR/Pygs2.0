@@ -118,7 +118,7 @@ class Game():
     
     self.particles = []
 
-    self.settings = Settings(pygame.font.Font('./data/font/jayce1.ttf'), self)
+    self.settings = Settings(pygame.font.Font('./data/font/munro.ttf', 20), self)
 
     self.true_scroll = [0,0]
     self.full_screen = False

@@ -1,4 +1,4 @@
-import pygame, json
+import pygame, json, random
 from ..utils.game_math import progression
 from ..system.typewriter import TypeWriter
 
@@ -10,6 +10,12 @@ class Settings():
     self.font = font
     self.game = game
     self.resolutions = [["Enter Full Screen", None], ["384 * 216", (384, 216)], ["768x432", (768, 432)], ["1152x648", (1152, 648)], ["1536x684", (1536,684)], ["1920x1080", (1920, 1080)]]
+    for x in range(len(self.resolutions)):
+      self.resolutions[x].append(pygame.rect.Rect(10, 50 + x * 25, 150, 39))
+      self.resolutions[x].append(pygame.rect.Rect(11, 50 + x * 25 + 3 , 146, 35))
+      self.resolutions[x].append(False)
+    
+    # self.resolutions[random.randint(0,len(self.resolutions) - 1)][4] = True
     self.load()
   
   def default_conf(self):
@@ -55,20 +61,20 @@ class Settings():
   def render(self, display, time):
     display.fill((0,0,0,0.5))
     #outline
-    set_rect = pygame.rect.Rect(4, 4, progression(time, 1500, 70) , 15)
-    controls_rect = pygame.rect.Rect(75, 4, progression(time, 1500, 70), 15)
+    set_rect = pygame.rect.Rect(4, 4, progression(time, 1500, 90) , 30)
+    controls_rect = pygame.rect.Rect(95, 4, progression(time, 1500, 90), 30)
     pygame.draw.rect(display, (200,200,200), set_rect, border_bottom_right_radius=10)
     pygame.draw.rect(display, (200,200,200), controls_rect, border_bottom_right_radius=10)
     #inner
-    iset_rect = pygame.rect.Rect(5, 5, progression(time, 1000, 67), 13)
+    iset_rect = pygame.rect.Rect(5, 5, progression(time, 1000, 87), 26)
     pygame.draw.rect(display, (10,10,10), iset_rect, border_bottom_right_radius=10)
-    icontrols_rect = pygame.rect.Rect(76, 5, progression(time, 1000, 68), 13)
+    icontrols_rect = pygame.rect.Rect(96, 5, progression(time, 1000, 87), 26)
     pygame.draw.rect(display, (10,10,10), icontrols_rect, border_bottom_right_radius=10)
     #typer
     img = self.font.render("Display", True, (255,255,255))
     display .blit(img, (14,4))
     img2 = self.font.render("Controls", True, (255,255,255))
-    display.blit(img2, (84, 4))
+    display.blit(img2, (98, 4))
     self.render_settings(display, time)
     display.set_colorkey((0,0,0,0))
   
@@ -77,17 +83,30 @@ class Settings():
     mouse_pos = list(pygame.mouse.get_pos())
     mouse_pos[0] /= 2
     mouse_pos[1] /= 2
-    
-    volume_rect = pygame.rect.Rect(progression(time, 1000, 10), 30, progression(time, 1000,150), progression(time, 1000,17))
-    pygame.draw.rect(display, (200, 200, 200), volume_rect, border_bottom_left_radius=10, border_top_right_radius=10)
-    ivolume_rect = pygame.rect.Rect(progression(time, 1000, 11), 31, progression(time, 1000, 148), progression(time, 1000,15))
-    pygame.draw.rect(display, (10, 10, 10), ivolume_rect, border_bottom_left_radius=10, border_top_right_radius=10)
-    if pygame.display.is_fullscreen():
-      img = self.font.render("Enter Windowed Mode", True, (255,255,255))
-    else:
-      img = self.font.render("Enter Fullscreen", True, (255,255,255))    
-    display.blit(img, (15, 31))
 
+    curr_hover_pos = -1
+
+    for pos, res in enumerate(self.resolutions):
+      if res[2].collidepoint(mouse_pos):
+        curr_hover_pos = pos
+
+
+    for pos, res in enumerate(self.resolutions):
+      if pos != curr_hover_pos:
+        pygame.draw.rect(display, (200,200,200), res[2], border_bottom_left_radius=10, border_top_right_radius=10)
+        pygame.draw.rect(display, (10, 10,10), res[3], border_bottom_left_radius=9, border_top_right_radius=9)
+        img = self.font.render(res[0], True, (255,255,255))
+        display.blit(img, (res[3].x + 6, res[3].y + 2))
+    
+    if curr_hover_pos != -1:
+      pygame.draw.rect(display, (10,200,10), self.resolutions[curr_hover_pos][2], border_bottom_left_radius=10, border_top_right_radius=10)
+      pygame.draw.rect(display, (10, 10,10), self.resolutions[curr_hover_pos][3], border_bottom_left_radius=9, border_top_right_radius=9)
+      img = self.font.render(self.resolutions[curr_hover_pos][0], True, (255,255,255))
+      display.blit(img, (self.resolutions[curr_hover_pos][3].x + 6, self.resolutions[curr_hover_pos][3].y + 2))
+    
+      
+    
+    
   def save(self):
     file = open(self.path, "w")
     json.dump({"controls_keyboard" : self.convert_to_dict(self.controls_keyboard), "music" : self.music}, file)
