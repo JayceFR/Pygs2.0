@@ -13,8 +13,9 @@ from pygs.map.map import TileMap
 from pygs.utils.decorators import pygs
 from pygs.ui.fire import Flame
 from pygs.system.settings import Settings
-SCREEN_WIDTH = 1152
-SCREEN_HEIGHT = 648
+from pygs.shader.shader import Shader
+SCREEN_WIDTH = 768
+SCREEN_HEIGHT = 432
 
 pygame.init()
 
@@ -55,6 +56,8 @@ class Game():
 
     self.hud = Hud(self)
 
+    pygame.key.set_mods(0)
+
     self.clock = pygame.time.Clock()
     self.player = Player(self, [0,0], [self.assets['player'].get_width(),self.assets['player'].get_height()])
     # self.player = Player(self, [0,0], [12,])
@@ -68,6 +71,7 @@ class Game():
     self.vertex_loc = "./data/scripts/vertex.vert"
     self.noise_img1 = pygame.image.load('./data/images/misc/pnoise.png').convert_alpha()
     self.noise_img2 = pygame.image.load('./data/images/misc/pnoise2.png').convert_alpha()
+    self.shader_obj = Shader(True, self.vertex_loc, self.fragment_loc)
 
     flower_objs = self.tilemap.get_objs('flower')
     self.flower = Flowers(flower_objs, self.assets, self)
@@ -138,7 +142,6 @@ class Game():
       self.movement = [False, False]
       if controls['left'] :
         self.movement[0] = True
-        self.dt = 0
       if controls['right']:
         self.movement[1] = True
 

@@ -33,6 +33,24 @@ class Hud():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.return_dict["l_click"] = True
+                    if self.obj.__class__.__name__ == "Game":
+                        #check for changes in display res
+                        if self.obj.settings.curr_hover_pos != -1:
+                            if self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1] != None:
+                                if pygame.display.is_fullscreen():
+                                    pygame.display.toggle_fullscreen()
+                                self.obj.full_screen = False
+                                self.obj.shader_obj.ctx.viewport = (0, 0, self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1][0], self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1][1] )
+                                self.obj.screen = pygame.display.set_mode(self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1], pygame.OPENGL | pygame.DOUBLEBUF )
+                                self.obj.display = pygame.Surface((self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1][0]//2, self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1][1]//2))
+                                self.obj.ui_display = pygame.Surface((self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1][0]//2, self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1][1]//2), pygame.SRCALPHA)
+                                pygame.display.flip()
+                            else:
+                                pygame.display.toggle_fullscreen()
+                                self.obj.display = pygame.Surface((pygame.display.get_window_size()[0]//2, pygame.display.get_window_size()[1]//2))
+                                self.obj.ui_display = pygame.Surface((pygame.display.get_window_size()[0]//2, pygame.display.get_window_size()[1]//2), pygame.SRCALPHA)
+                                self.obj.full_screen = not self.obj.full_screen
+                            print(pygame.display.get_window_size())
                     if self.obj.__class__.__name__ == "Editor":
                         if not pygame.rect.Rect(0,0,100,600).collidepoint(self.obj.mouse_pos) and not self.obj.ongrid:
                             self.obj.toggle_offgrid()
@@ -54,6 +72,7 @@ class Hud():
                 if event.key in key_controls["jump"]:
                     if self.obj.__class__.__name__ == "Game":
                         self.obj.player.jump()
+                        print(pygame.display.get_window_size())
                     self.return_dict["jump"] = True
                 if event.key in key_controls["dash"]:
                     if self.obj.__class__.__name__ == "Game":

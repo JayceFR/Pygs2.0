@@ -6,7 +6,6 @@ from pygame.locals import *
 
 def pygs(function):
   def game(self=None):
-    shader_obj = Shader(True, self.vertex_loc, self.fragment_loc)
     run = True
     uniform = {'noise_tex1': self.noise_img1, 'noise_tex2' : self.noise_img2}
     start_time = time.time()
@@ -29,10 +28,11 @@ def pygs(function):
         surf = pygame.transform.scale(surf, pygame.display.get_window_size())
       else:
         surf = pygame.transform.scale(surf, pygame.display.get_window_size())
+      print(surf.get_width(), surf.get_height())
       self.screen.blit(surf, (0,0))
       uniform = {'noise_tex1': self.noise_img1, 'noise_tex2' : self.noise_img2, 'tex': self.screen, 'ui_tex' : self.ui_display}
       variables = {'itime' : time.time() - start_time, 'cam_scroll': tuple(list(self.scroll))}
-      shader_obj.draw(uniform, variables)
+      self.shader_obj.draw(uniform, variables)
       pygame.display.flip()
       run = self.hud.get_controls()['run']
     print("hello")

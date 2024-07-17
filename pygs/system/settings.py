@@ -9,7 +9,8 @@ class Settings():
     self.music = {}
     self.font = font
     self.game = game
-    self.resolutions = [["Enter Full Screen", None], ["384 * 216", (384, 216)], ["768x432", (768, 432)], ["1152x648", (1152, 648)], ["1536x684", (1536,684)], ["1920x1080", (1920, 1080)]]
+    self.curr_hover_pos = -1
+    self.resolutions = [["Enter Full Screen", None], ["384x216", (384, 216)], ["768x432", (768, 432)], ["1152x648", (1152, 648)], ["1536x684", (1536,684)], ["1920x1080", (1920, 1080)]]
     for x in range(len(self.resolutions)):
       self.resolutions[x].append(pygame.rect.Rect(10, 50 + x * 25, 150, 39))
       self.resolutions[x].append(pygame.rect.Rect(11, 50 + x * 25 + 3 , 146, 35))
@@ -84,27 +85,29 @@ class Settings():
     mouse_pos[0] /= 2
     mouse_pos[1] /= 2
 
-    curr_hover_pos = -1
+    self.curr_hover_pos = -1
+
+    if pygame.display.is_fullscreen():
+      self.resolutions[0][0] = "Windowed Mode"
+    else:
+      self.resolutions[0][0] = "Enter Full Screen"
 
     for pos, res in enumerate(self.resolutions):
       if res[2].collidepoint(mouse_pos):
-        curr_hover_pos = pos
-
+        self.curr_hover_pos = pos
 
     for pos, res in enumerate(self.resolutions):
-      if pos != curr_hover_pos:
+      if pos != self.curr_hover_pos:
         pygame.draw.rect(display, (200,200,200), res[2], border_bottom_left_radius=10, border_top_right_radius=10)
         pygame.draw.rect(display, (10, 10,10), res[3], border_bottom_left_radius=9, border_top_right_radius=9)
         img = self.font.render(res[0], True, (255,255,255))
         display.blit(img, (res[3].x + 6, res[3].y + 2))
     
-    if curr_hover_pos != -1:
-      pygame.draw.rect(display, (10,200,10), self.resolutions[curr_hover_pos][2], border_bottom_left_radius=10, border_top_right_radius=10)
-      pygame.draw.rect(display, (10, 10,10), self.resolutions[curr_hover_pos][3], border_bottom_left_radius=9, border_top_right_radius=9)
-      img = self.font.render(self.resolutions[curr_hover_pos][0], True, (255,255,255))
-      display.blit(img, (self.resolutions[curr_hover_pos][3].x + 6, self.resolutions[curr_hover_pos][3].y + 2))
-    
-      
+    if self.curr_hover_pos != -1:
+      pygame.draw.rect(display, (10,200,10), self.resolutions[self.curr_hover_pos][2], border_bottom_left_radius=10, border_top_right_radius=10)
+      pygame.draw.rect(display, (10, 10,10), self.resolutions[self.curr_hover_pos][3], border_bottom_left_radius=9, border_top_right_radius=9)
+      img = self.font.render(self.resolutions[self.curr_hover_pos][0], True, (255,255,255))
+      display.blit(img, (self.resolutions[self.curr_hover_pos][3].x + 6, self.resolutions[self.curr_hover_pos][3].y + 2))
     
     
   def save(self):
