@@ -1,6 +1,7 @@
 #version 330 
 
 uniform sampler2D tex;
+uniform sampler2D ui_tex;
 uniform float time;
 
 uniform sampler2D noise_tex1;
@@ -53,9 +54,13 @@ void foreground(){
         f_color = vec4(mix(fog_color, f_color.rgb, fogFactor), 1.0);
         f_color = vec4(mix(fog_color2, f_color.rgb, fogFactor), 1.0);
     }
-    // if (texture(tex,px_uvs).a > 0){
-    //     f_color = vec4(1.0,1.0,0.0,1.0);
-    // }
+    float darkness = 0.7;
+    vec4 dark = vec4(0.0, 0.0, 0.0, 1.0);
+    f_color = darkness * dark + (1 - darkness) * f_color;
+    vec4 ui_color = texture(ui_tex, px_uvs);
+    if (ui_color.a > 0){
+        f_color = ui_color;
+    }
 }
 
 

@@ -13,8 +13,8 @@ from pygs.map.map import TileMap
 from pygs.utils.decorators import pygs
 from pygs.ui.fire import Flame
 from pygs.system.settings import Settings
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1152
+SCREEN_HEIGHT = 648
 
 pygame.init()
 
@@ -25,7 +25,7 @@ class Game():
     self.MONITOR_SIZE = pygame.display.get_desktop_sizes()[0]
     print(self.MONITOR_SIZE)
     self.display = pygame.Surface((SCREEN_WIDTH//2,SCREEN_HEIGHT//2))
-    # self.ui_display = pygame.Surface((SCREEN_WIDTH//2, SCREEN_HEIGHT//2), pygame.SRCALPHA)
+    self.ui_display = pygame.Surface((SCREEN_WIDTH//2, SCREEN_HEIGHT//2), pygame.SRCALPHA)
     self.movement = [False, False]
 
     self.assets = {
@@ -118,7 +118,7 @@ class Game():
     
     self.particles = []
 
-    self.settings = Settings()
+    self.settings = Settings(pygame.font.Font('./data/font/jayce1.ttf'), self)
 
     self.true_scroll = [0,0]
     self.full_screen = False
@@ -163,7 +163,7 @@ class Game():
 
       # for rect in self.waters_rects:
       #   pygame.draw.rect(self.display, (0,0,200), [rect[0] - scroll[0], rect[1] - scroll[1], rect[2], rect[3]])
-
+      self.settings.render(self.ui_display, time)
       self.water_manager.update(self)
 
       for citizen in self.citizens:
