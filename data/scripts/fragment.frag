@@ -7,6 +7,7 @@ uniform float time;
 uniform sampler2D noise_tex1;
 uniform sampler2D noise_tex2;
 uniform float itime;
+uniform float darkness;
 
 uniform vec2 cam_scroll;
 
@@ -54,7 +55,7 @@ void foreground(){
         f_color = vec4(mix(fog_color, f_color.rgb, fogFactor), 1.0);
         f_color = vec4(mix(fog_color2, f_color.rgb, fogFactor), 1.0);
     }
-    float darkness = 0.7;
+    // blur background
     vec4 dark = vec4(0.0, 0.0, 0.0, 1.0);
     f_color = darkness * dark + (1 - darkness) * f_color;
     vec4 ui_color = texture(ui_tex, px_uvs);

@@ -14,19 +14,25 @@ from pygs.utils.decorators import pygs
 from pygs.ui.fire import Flame
 from pygs.system.settings import Settings
 from pygs.shader.shader import Shader
-SCREEN_WIDTH = 768
-SCREEN_HEIGHT = 432
 
 pygame.init()
 
 class Game():
   def __init__(self):
     pygame.display.set_caption("Pygs2.0")
-    self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.OPENGL | pygame.DOUBLEBUF )
-    self.MONITOR_SIZE = pygame.display.get_desktop_sizes()[0]
-    print(self.MONITOR_SIZE)
-    self.display = pygame.Surface((SCREEN_WIDTH//2,SCREEN_HEIGHT//2))
-    self.ui_display = pygame.Surface((SCREEN_WIDTH//2, SCREEN_HEIGHT//2), pygame.SRCALPHA)
+    self.settings = Settings(pygame.font.Font('./data/font/munro.ttf', 20), self)
+    flags = pygame.OPENGL | pygame.DOUBLEBUF
+    if self.settings.display["res"] != None:
+      SCREEN_WIDTH = self.settings.display["res"][0]
+      SCREEN_HEIGHT = self.settings.display["res"][1]
+    else:
+      SCREEN_WIDTH = 1280
+      SCREEN_HEIGHT = 720
+    self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), flags )
+    if self.settings.display["res"] == None:
+      pygame.display.toggle_fullscreen()
+    self.display = pygame.Surface((640,360))
+    self.ui_display = pygame.Surface((640, 360), pygame.SRCALPHA)
     self.movement = [False, False]
 
     self.assets = {
@@ -100,7 +106,7 @@ class Game():
     self.glow_img.fill((174*0.2, 226*0.2, 255*0.3))
     img = pygame.image.load('./data/images/misc/light.png').convert()
     self.glow_img.blit(img, (0,0), special_flags=pygame.BLEND_RGBA_MULT)
-    self.fireflies = Fireflies(SCREEN_WIDTH//2,SCREEN_HEIGHT//2, self.glow_img)
+    self.fireflies = Fireflies(self.display.get_width(),self.display.get_height(), self.glow_img)
 
     self.lamp_img = pygame.Surface((730, 1095))
     self.lamp_img.fill((255*0.6, 255*0.6, 255*0.6))
@@ -118,11 +124,9 @@ class Game():
 
     leaf_img = pygame.image.load('./data/images/ui/leaf.png').convert()
     leaf_img.set_colorkey((0,0,0))
-    self.leaf = LeafManager(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, leaf_img )
+    self.leaf = LeafManager(self.display.get_width(), self.display.get_height(), leaf_img )
     
     self.particles = []
-
-    self.settings = Settings(pygame.font.Font('./data/font/munro.ttf', 20), self)
 
     self.true_scroll = [0,0]
     self.full_screen = False
@@ -130,12 +134,15 @@ class Game():
     for obj in self.fire_pos:
       self.fire_particles.append(Flame((obj['pos'][0] + 10, obj['pos'][1] + 2)))
     # self.scroll = [0,0]
+    self.settings_window = False
+    self.darkness = 0
 
   @pygs
   def run(self):
       self.clock.tick(60)
       time = pygame.time.get_ticks()
       # print(self.clock.get_fps())
+      self.ui_display.fill((0,0,0,0))
       self.display.fill((2,2,2))
 
       controls = self.hud.get_controls()
@@ -145,12 +152,12 @@ class Game():
       if controls['right']:
         self.movement[1] = True
 
-      if not self.full_screen:
-        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
-        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//3.7) / 20
-      else:
-        self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//7) / 5
-        self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//6) / 20
+      # if not self.full_screen:
+      self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - 1280//4) / 5
+      self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - 720//4) / 20
+      # else:
+      #   self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
+      #   self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
       self.scroll = self.true_scroll.copy()
       self.scroll[0] = int(self.scroll[0])
       self.scroll[1] = int(self.scroll[1])
@@ -166,7 +173,11 @@ class Game():
 
       # for rect in self.waters_rects:
       #   pygame.draw.rect(self.display, (0,0,200), [rect[0] - scroll[0], rect[1] - scroll[1], rect[2], rect[3]])
-      self.settings.render(self.ui_display, time)
+      if self.settings_window:
+        self.darkness = 0.8
+        self.settings.render(self.ui_display, time)
+      else:
+        self.darkness = 0
       self.water_manager.update(self)
 
       for citizen in self.citizens:

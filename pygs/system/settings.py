@@ -6,11 +6,11 @@ class Settings():
   def __init__(self, font, game) -> None:
     self.path = "data\save\settings.json"
     self.controls_keyboard = {}
-    self.music = {}
+    self.display = {}
     self.font = font
     self.game = game
     self.curr_hover_pos = -1
-    self.resolutions = [["Enter Full Screen", None], ["384x216", (384, 216)], ["768x432", (768, 432)], ["1152x648", (1152, 648)], ["1536x684", (1536,684)], ["1920x1080", (1920, 1080)]]
+    self.resolutions = [["Enter Full Screen", None], ["640x360", (640, 360)], ["960x540", (960, 540)], ["1280x720", (1280, 720)], ["1600x900", (1600, 900)], ["1920x1080", (1920, 1080)]]
     for x in range(len(self.resolutions)):
       self.resolutions[x].append(pygame.rect.Rect(10, 50 + x * 25, 150, 39))
       self.resolutions[x].append(pygame.rect.Rect(11, 50 + x * 25 + 3 , 146, 35))
@@ -28,10 +28,10 @@ class Settings():
         "down" : [pygame.K_DOWN, pygame.K_s],
         "jump" : [pygame.K_SPACE, pygame.K_UP, pygame.K_w],
         "dash" : [pygame.K_e, pygame.K_l],
-        "fullscreen" : [pygame.K_f, pygame.K_ESCAPE]
+        "settings": [pygame.K_ESCAPE]
       },
-      "music" : {
-        "volume" : 40
+      "display" : {
+        "res" : [960, 540]
       },
     }
 
@@ -47,17 +47,20 @@ class Settings():
       return_dict[key] = list(pdict[key]) 
     return return_dict
 
+  def update_res(self, new_res):
+    self.display["res"] = new_res
+
   def load(self):
     try:
       file = open(self.path, "r")
       settings = json.load(file)
       file.close()
       self.controls_keyboard = self.convert_to_set(settings["controls_keyboard"])
-      self.music = settings["music"]
+      self.display = settings["display"]
     except:
       conf = self.default_conf()
       self.controls_keyboard = self.convert_to_set(conf["controls_keyboard"])
-      self.music = conf["music"] 
+      self.display = conf["display"] 
   
   def render(self, display, time):
     display.fill((0,0,0,0.5))
@@ -112,5 +115,5 @@ class Settings():
     
   def save(self):
     file = open(self.path, "w")
-    json.dump({"controls_keyboard" : self.convert_to_dict(self.controls_keyboard), "music" : self.music}, file)
+    json.dump({"controls_keyboard" : self.convert_to_dict(self.controls_keyboard), "display" : self.display}, file)
     file.close()
