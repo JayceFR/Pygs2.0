@@ -107,14 +107,6 @@ class Settings():
     else:
       self.resolutions[0][0] = "Enter Full Screen"
 
-    # for pos, res in enumerate(self.resolutions):
-    #   if res[3].collidepoint(mouse_pos) and pos != self.curr_hover_pos:
-    #     print("I am in here", pos, self.curr_hover_pos)
-    #     self.curr_hover_pos = pos
-    #     self.done_typing = False
-    #     self.typer.refresh()
-    #     self.typer.write([res[2],])
-
     for pos, res in enumerate(self.resolutions):
       if pos != self.curr_hover_pos:
         pygame.draw.rect(display, (200,200,200), res[3], border_bottom_left_radius=10, border_top_right_radius=10)

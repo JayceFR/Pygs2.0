@@ -147,10 +147,11 @@ class Game():
 
       controls = self.hud.get_controls()
       self.movement = [False, False]
-      if controls['left'] :
-        self.movement[0] = True
-      if controls['right']:
-        self.movement[1] = True
+      if not self.settings_window:
+        if controls['left'] :
+          self.movement[0] = True
+        if controls['right']:
+          self.movement[1] = True
 
       self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - 1280//4) / 5
       self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - 720//4) / 20
