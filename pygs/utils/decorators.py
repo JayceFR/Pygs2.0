@@ -15,6 +15,10 @@ def pygs(function):
       self.dt = time.time() - last_time
       self.dt *= 60
       last_time = time.time()
+      if self.settings_window:
+        self.darkness = 0.8
+      else:
+        self.darkness = 0
       function(self)
       #particles
       for particle in self.particles.copy():

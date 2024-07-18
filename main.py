@@ -152,12 +152,9 @@ class Game():
       if controls['right']:
         self.movement[1] = True
 
-      # if not self.full_screen:
       self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - 1280//4) / 5
       self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - 720//4) / 20
-      # else:
-      #   self.true_scroll[0] += (self.player.rect().x - self.true_scroll[0] - pygame.display.get_window_size()[0]//4) / 5
-      #   self.true_scroll[1] += (self.player.rect().y - self.true_scroll[1] - pygame.display.get_window_size()[1]//4) / 20
+
       self.scroll = self.true_scroll.copy()
       self.scroll[0] = int(self.scroll[0])
       self.scroll[1] = int(self.scroll[1])
@@ -171,18 +168,14 @@ class Game():
       for particle in self.fire_particles:
         particle.draw_flame(self.display, self.scroll)
 
-      # for rect in self.waters_rects:
-      #   pygame.draw.rect(self.display, (0,0,200), [rect[0] - scroll[0], rect[1] - scroll[1], rect[2], rect[3]])
-      if self.settings_window:
-        self.darkness = 0.8
-        self.settings.render(self.ui_display, time)
-      else:
-        self.darkness = 0
       self.water_manager.update(self)
 
       for citizen in self.citizens:
         citizen.update(self.tilemap, (0,0), self.dt)
         citizen.render(self.display, offset=self.scroll)
+
+      if self.settings_window:
+        self.settings.render(self.ui_display, time)
       
       #lamp img 
       for lamp in self.lamp_positions:

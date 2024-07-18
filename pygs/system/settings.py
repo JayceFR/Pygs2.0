@@ -1,6 +1,6 @@
 import pygame, json, random
 from ..utils.game_math import progression
-from ..system.typewriter import TypeWriter
+from .typewriter import TypeWriter
 
 class Settings():
   def __init__(self, font, game) -> None:
@@ -10,7 +10,9 @@ class Settings():
     self.font = font
     self.game = game
     self.curr_hover_pos = -1
-    self.resolutions = [["Enter Full Screen", None], ["640x360", (640, 360)], ["960x540", (960, 540)], ["1280x720", (1280, 720)], ["1600x900", (1600, 900)], ["1920x1080", (1920, 1080)]]
+    self.typer = TypeWriter(font, (255,255,255), 200, 70, 600, 20, None)
+    self.typer.write(["Hello World"])
+    self.resolutions = [["Enter Full Screen", None, "NOT ADVISABLE! as may cause scalling issues Restart Required"], ["640x360", (640, 360), "640 x 360 Ideal for small screen devices Restart Required"], ["960x540", (960, 540), "960 x 540 Ideal for medium sized devices Restart Requried"], ["1280x720", (1280, 720), "1280 x 720 Highly Recommended for most high end monitors Restart Required"], ["1600x900", (1600, 900), "1600 x 900 May cause lags Restart Requried"], ["1920x1080", (1920, 1080), "1920 x 1080 May cause rendering lags Restart Requried"]]
     for x in range(len(self.resolutions)):
       self.resolutions[x].append(pygame.rect.Rect(10, 50 + x * 25, 150, 39))
       self.resolutions[x].append(pygame.rect.Rect(11, 50 + x * 25 + 3 , 146, 35))
@@ -18,6 +20,7 @@ class Settings():
     
     # self.resolutions[random.randint(0,len(self.resolutions) - 1)][4] = True
     self.load()
+    self.done_typing = False
   
   def default_conf(self):
     return {
@@ -28,7 +31,8 @@ class Settings():
         "down" : [pygame.K_DOWN, pygame.K_s],
         "jump" : [pygame.K_SPACE, pygame.K_UP, pygame.K_w],
         "dash" : [pygame.K_e, pygame.K_l],
-        "settings": [pygame.K_ESCAPE]
+        "settings": [pygame.K_ESCAPE],
+        "select" : [pygame.K_RETURN],
       },
       "display" : {
         "res" : [960, 540]
@@ -81,36 +85,51 @@ class Settings():
     display.blit(img2, (98, 4))
     self.render_settings(display, time)
     display.set_colorkey((0,0,0,0))
+
+  def update_hover_pos(self, pos):
+    if self.curr_hover_pos != pos:
+      self.curr_hover_pos = pos
+      self.done_typing = False
+      self.typer.refresh()
+      self.typer.write([self.resolutions[self.curr_hover_pos][2],])
   
   def render_settings(self, display, time):
     
+    #Need to do more complicated calculations based on screen size.
     mouse_pos = list(pygame.mouse.get_pos())
     mouse_pos[0] /= 2
     mouse_pos[1] /= 2
 
-    self.curr_hover_pos = -1
+    # self.curr_hover_pos = -1
 
     if pygame.display.is_fullscreen():
       self.resolutions[0][0] = "Windowed Mode"
     else:
       self.resolutions[0][0] = "Enter Full Screen"
 
-    for pos, res in enumerate(self.resolutions):
-      if res[2].collidepoint(mouse_pos):
-        self.curr_hover_pos = pos
+    # for pos, res in enumerate(self.resolutions):
+    #   if res[3].collidepoint(mouse_pos) and pos != self.curr_hover_pos:
+    #     print("I am in here", pos, self.curr_hover_pos)
+    #     self.curr_hover_pos = pos
+    #     self.done_typing = False
+    #     self.typer.refresh()
+    #     self.typer.write([res[2],])
 
     for pos, res in enumerate(self.resolutions):
       if pos != self.curr_hover_pos:
-        pygame.draw.rect(display, (200,200,200), res[2], border_bottom_left_radius=10, border_top_right_radius=10)
-        pygame.draw.rect(display, (10, 10,10), res[3], border_bottom_left_radius=9, border_top_right_radius=9)
+        pygame.draw.rect(display, (200,200,200), res[3], border_bottom_left_radius=10, border_top_right_radius=10)
+        pygame.draw.rect(display, (10, 10,10), res[4], border_bottom_left_radius=9, border_top_right_radius=9)
         img = self.font.render(res[0], True, (255,255,255))
         display.blit(img, (res[3].x + 6, res[3].y + 2))
     
     if self.curr_hover_pos != -1:
-      pygame.draw.rect(display, (10,200,10), self.resolutions[self.curr_hover_pos][2], border_bottom_left_radius=10, border_top_right_radius=10)
-      pygame.draw.rect(display, (10, 10,10), self.resolutions[self.curr_hover_pos][3], border_bottom_left_radius=9, border_top_right_radius=9)
+      pygame.draw.rect(display, (10,200,10), self.resolutions[self.curr_hover_pos][3], border_bottom_left_radius=10, border_top_right_radius=10)
+      pygame.draw.rect(display, (10, 10,10), self.resolutions[self.curr_hover_pos][4], border_bottom_left_radius=9, border_top_right_radius=9)
       img = self.font.render(self.resolutions[self.curr_hover_pos][0], True, (255,255,255))
-      display.blit(img, (self.resolutions[self.curr_hover_pos][3].x + 6, self.resolutions[self.curr_hover_pos][3].y + 2))
+      display.blit(img, (self.resolutions[self.curr_hover_pos][4].x + 6, self.resolutions[self.curr_hover_pos][4].y + 2))
+    
+    if not self.done_typing:
+      self.done_typing = self.typer.update(time, display, [500,100])
     
     
   def save(self):

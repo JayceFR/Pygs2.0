@@ -15,7 +15,7 @@ class Hud():
                 if event.button == 0:
                     joystick = self.joysticks[event.instance_id]
                     self.return_dict["jump"] = True
-                    if self.obj.__class__.__name__ == "Game":
+                    if self.obj.__class__.__name__ == "Game" and not self.obj.settings_window:
                         self.obj.player.jump()
                     # if joystick.rumble(0, 0.7, 500):
                     #     print(f"Rumble effect played on joystick {event.instance_id}")
@@ -33,10 +33,10 @@ class Hud():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.return_dict["l_click"] = True
-                    if self.obj.__class__.__name__ == "Game":
-                        #check for changes in display res
-                        if self.obj.settings.curr_hover_pos != -1:
-                            self.obj.settings.update_res(self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1])
+                    # if self.obj.__class__.__name__ == "Game":
+                    #     #check for changes in display res
+                    #     if self.obj.settings.curr_hover_pos != -1:
+                    #         self.obj.settings.update_res(self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1])
                     if self.obj.__class__.__name__ == "Editor":
                         if not pygame.rect.Rect(0,0,100,600).collidepoint(self.obj.mouse_pos) and not self.obj.ongrid:
                             self.obj.toggle_offgrid()
@@ -56,16 +56,24 @@ class Hud():
                 if event.key in key_controls["left"]:
                     self.return_dict["left"] = True
                 if event.key in key_controls["jump"]:
-                    if self.obj.__class__.__name__ == "Game":
+                    if self.obj.__class__.__name__ == "Game" and not self.obj.settings_window:
                         self.obj.player.jump()
                         print(pygame.display.get_window_size())
                     self.return_dict["jump"] = True
                 if event.key in key_controls["dash"]:
                     if self.obj.__class__.__name__ == "Game":
                         self.obj.player.dash()
+                if event.key in key_controls["select"]:
+                    if self.obj.__class__.__name__ == "Game" and self.obj.settings_window and self.obj.settings.curr_hover_pos != -1:
+                        self.obj.settings.update_res(self.obj.settings.resolutions[self.obj.settings.curr_hover_pos][1])
                 if event.key in key_controls["up"]:
-                    self.return_dict["up"] = True
+                    if self.obj.__class__.__name__ == "Game" and self.obj.settings_window:
+                        self.obj.settings.update_hover_pos((self.obj.settings.curr_hover_pos - 1) % len(self.obj.settings.resolutions))
+                    else:
+                        self.return_dict["up"] = True
                 if event.key in key_controls["down"]:
+                    if self.obj.__class__.__name__ == "Game" and self.obj.settings_window:
+                        self.obj.settings.update_hover_pos((self.obj.settings.curr_hover_pos + 1) % len(self.obj.settings.resolutions))
                     self.return_dict["down"] = True
                 if event.key == pygame.K_LSHIFT:
                     self.return_dict['ongrid'] = not self.return_dict['ongrid']

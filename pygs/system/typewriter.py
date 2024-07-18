@@ -13,7 +13,7 @@ class TypeWriter():
         self.font_size = font_size
         self.list_of_texts = [] # [['h', 'e', 'f', ' ', ','], 'i rock to the core']
         self.last_update = 0
-        self.cooldown = 50
+        self.cooldown = 20
         self.current_letter = -1
         self.current_frame = 0 
         self.waiting_to_update = False
@@ -41,7 +41,20 @@ class TypeWriter():
     def draw_enter(self, x, y, text, display):
         img = self.font.render(text, True, self.text_col)
         display.blit(img, (x, y))
-    
+
+    def refresh(self, chuma_object=None):
+        self.waiting_to_update = False
+        self.current_frame += 1
+        self.current_letter = -1
+        self.space_count = 0
+        self.banana_turn += 1
+        self.current_string_pos = 0
+        self.strings = ["", "", ""]
+        self.check_x = self.start_x
+        if chuma_object:
+            chuma_object.reset()
+        if self.current_frame > len(self.list_of_texts) - 1:
+            return True
     
     def update(self, time, display, enter_loc = [350,80], chuma_object = None):
         if time - self.last_update > self.cooldown:
@@ -75,16 +88,5 @@ class TypeWriter():
             self.draw_enter(enter_loc[0], enter_loc[1], "Enter", display)
             key = pygame.key.get_pressed()
             if key[pygame.K_RETURN]:
-                self.waiting_to_update = False
-                self.current_frame += 1
-                self.current_letter = -1
-                self.space_count = 0
-                self.banana_turn += 1
-                self.current_string_pos = 0
-                self.strings = ["", "", ""]
-                self.check_x = self.start_x
-                if chuma_object:
-                    chuma_object.reset()
-                if self.current_frame > len(self.list_of_texts) - 1:
-                    return True
+                return self.refresh(chuma_object)
         return False
